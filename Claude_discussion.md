@@ -1,3 +1,5 @@
+## This is the full prompt list to generate this repository from Claude.  Feel free to use this document as a reference.
+
 # User:
 I want to build a basic chat bot web interface where I introduce a topic and the LLM chat bot talks to itself.  This web interface should include an intial prompt that asks "What topic should I deep dive on" and then prompt gets pasts to the LLM and the LLM iterates a conversation with itself and the output is put into a chat window.  I should be able to export the whole discussion as a text file.
 
@@ -204,6 +206,7 @@ Let me know if you need any clarification or have any questions about the implem
 
 -----------------------------------------------
 # User:
+(I created the three files in a directory all side by side, installed the dependencies, ran the app.py and go this error)
 I get this error:
 
 TemplateNotFound
@@ -303,6 +306,8 @@ If you're still encountering issues after trying these steps, please provide mor
 
 -----------------------------------------------
 # User:
+(I fixed the directories ran the code and it worked!  It was basic and very white.  I also didn't like the spacing so I asked it to add padding to elements.)
+
 This is good, lets format the page a bit, can you make this more a dark mode and make sure there is some padding between all of the elements?  there should also be interrupt button after the conversation as the button doesn't really change and isn't very user friendly.  Can you also add a stop conversation button to allow the user to stop the conversation at any time?
 
 -----------------------------------------------
@@ -1057,6 +1062,8 @@ Note that the effectiveness of the markdown formatting depends on the LLM actual
 
 -----------------------------------------------
 # User:
+(Afer testing a bit I noticed the responses were a little samesy all the time... so I asked for more logging to see what is going on.)
+
 Lets add a 10 second pause between calls.  And can we log what we are sending as prompts?  This seems a little bit off to me.
 
 -----------------------------------------------
@@ -1276,6 +1283,8 @@ If you're still noticing issues with the conversation flow or the quality of res
 
 -----------------------------------------------
 # User:
+(Ahh, we were sending the same prompt over and over each time.)
+
 So it appears we keep sending the starter prompt over and over again.  Lets instead send the last prompt returned from the LLM as the new prompt in the chat each segment.
 
 -----------------------------------------------
