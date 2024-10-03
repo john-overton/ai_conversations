@@ -3,137 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Self-talking Chatbot</title>
+    <title>AI Chatbot</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/2.0.3/marked.min.js"></script>
     <script src="{{ url_for('static', filename='script.js') }}"></script>
-    <style>
-        body { 
-            font-family: Arial, sans-serif; 
-            max-width: 800px; 
-            margin: 0 auto; 
-            padding: 20px; 
-            background-color: #1e1e1e; 
-            color: #e0e0e0;
-        }
-        h1 { margin-bottom: 20px; }
-        #chatWindow { 
-            height: 400px; 
-            border: 1px solid #444; 
-            border-radius: 5px;
-            overflow-y: scroll; 
-            padding: 15px; 
-            margin-bottom: 20px; 
-            background-color: #2a2a2a;
-        }
-        .message {
-            max-width: 80%;
-            margin-bottom: 15px;
-            clear: both;
-        }
-        .message .bubble {
-            padding: 10px;
-            border-radius: 10px;
-            position: relative;
-        }
-        .message .name {
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-        .user-message {
-            float: right;
-        }
-        .user-message .bubble {
-            background-color: #0056b3;
-            border-bottom-right-radius: 0;
-        }
-        .bot-message {
-            float: left;
-        }
-        .bot-message .bubble {
-            background-color: #444;
-            border-bottom-left-radius: 0;
-        }
-        .message .bubble p {
-            margin: 0;
-        }
-        #userInput { 
-            width: calc(100% - 22px); 
-            height: 100px; 
-            padding: 10px; 
-            margin-bottom: 10px; 
-            background-color: #333; 
-            color: #e0e0e0; 
-            border: 1px solid #444;
-            border-radius: 5px;
-            resize: vertical;
-            font-family: inherit;
-            font-size: inherit;
-        }
-        .button-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-        button {
-            padding: 10px 15px;
-            background-color: #0056b3;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            flex-grow: 1;
-        }
-        button:hover {
-            background-color: #003d82;
-        }
-        #stopBtn {
-            background-color: #dc3545;
-        }
-        #stopBtn:hover {
-            background-color: #a71d2a;
-        }
-        #resetBtn {
-            background-color: #ffc107;
-            color: #000;
-        }
-        #resetBtn:hover {
-            background-color: #d39e00;
-        }
-        #fileInput {
-            display: none;
-        }
-        #fileLabel {
-            padding: 10px 15px;
-            background-color: #28a745;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            text-align: center;
-        }
-        #fileLabel:hover {
-            background-color: #218838;
-        }
-        #fileName {
-            margin-top: 5px;
-            font-style: italic;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <h1>Self-talking Chatbot</h1>
-    <div id="chatWindow"></div>
-    <textarea id="userInput" placeholder="Enter a topic to discuss"></textarea>
-    <div class="button-container">
-        <button id="sendBtn">Start Discussion</button>
-        <button id="stopBtn">Stop Conversation</button>
-        <button id="resetBtn">Reset Conversation</button>
-        <button id="exportBtn">Export Conversation</button>
-        <label id="fileLabel" for="fileInput">Attach Document</label>
-        <input type="file" id="fileInput" accept=".txt">
+    <div class="container">
+        <h1 id="chatTitle">AI Chatbot</h1>
+        <div class="settings">
+            <label class="switch">
+                <input type="checkbox" id="darkModeToggle">
+                <span class="slider round"></span>
+                <span class="label">Dark Mode</span>
+            </label>
+            <label class="switch">
+                <input type="checkbox" id="selfChatToggle">
+                <span class="slider round"></span>
+                <span class="label">AI Self-Chat</span>
+            </label>
+        </div>
+        <div id="chatWindow"></div>
+        <div id="artifactPane" style="display: none;">
+            <h3>Detected Code:</h3>
+            <pre><code id="detectedCode"></code></pre>
+        </div>
+        <textarea id="userInput" placeholder="Enter your message"></textarea>
+        <div class="button-container">
+            <button id="sendBtn">Send</button>
+            <button id="stopBtn" style="display: none;">Stop</button>
+            <button id="resetBtn">Reset</button>
+            <button id="exportBtn">Export</button>
+            <label id="fileLabel" for="fileInput">Attach File</label>
+            <input type="file" id="fileInput" accept=".txt,.py,.js,.html,.css,.md,.json,.xml">
+            <label id="projectLabel" for="projectInput">Upload Project</label>
+            <input type="file" id="projectInput" accept=".zip">
+        </div>
+        <div id="fileName"></div>
+        <div class="prompt-container">
+            <textarea id="customPrompt" placeholder="Enter custom prompt (use {user_input} for user's message)"></textarea>
+        </div>
     </div>
-    <div id="fileName"></div>
 </body>
 </html>
