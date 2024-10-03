@@ -20,7 +20,6 @@ def chat():
     iterations = data['iterations']
     last_response = data.get('last_response', '')
     document_content = data.get('document_content', '')
-    generate_title = data.get('generate_title', False)
     
     if not last_response:
         # First iteration
@@ -38,15 +37,8 @@ def chat():
     logging.info(f"Sending prompt to LLM: {prompt}")
     response = client.generate(model='llama3.2:latest', prompt=prompt)
     time.sleep(10)  # 10-second pause between calls
-
-    result = {"response": response['response']}
-
-    if generate_title:
-        title_prompt = f"Based on the following conversation, generate a short, catchy title:\n\n{topic}\n{response['response']}"
-        title_response = client.generate(model='llama3.2:latest', prompt=title_prompt)
-        result["title"] = title_response['response'].strip()
     
-    return jsonify(result)
+    return jsonify({"response": response['response']})
 
 @app.route('/reset', methods=['POST'])
 def reset():

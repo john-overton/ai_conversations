@@ -5,7 +5,6 @@ $(document).ready(function() {
     let currentTopic = '';
     let lastResponse = '';
     let documentContent = '';
-    let aiTitle = '';
 
     function formatMessage(message) {
         return marked(message);
@@ -28,7 +27,7 @@ $(document).ready(function() {
 
     function updateButtonStates() {
         if (isRunning) {
-            $("#sendBtn").text("Interject");
+            $("#sendBtn").text("Interrupt");
             $("#stopBtn").show();
         } else {
             $("#sendBtn").text("Start Discussion");
@@ -52,18 +51,12 @@ $(document).ready(function() {
                     topic: currentTopic, 
                     iterations: 1, 
                     last_response: lastResponse,
-                    document_content: documentContent,
-                    generate_title: aiTitle === ''
+                    document_content: documentContent
                 }),
                 success: function(response) {
                     addMessage(response.response);
                     lastResponse = response.response;
                     iterationCount++;
-                    
-                    if (response.title && aiTitle === '') {
-                        aiTitle = response.title;
-                        $("#aiTitle").text(aiTitle);
-                    }
                     
                     if (iterationCount % 16 === 0) {
                         if (confirm("Do you want to continue the conversation?")) {
@@ -95,7 +88,7 @@ $(document).ready(function() {
                 isRunning = false;
                 setTimeout(() => {
                     addMessage(userInput, true);
-                    lastResponse = '';  // Reset last response when user interjects
+                    lastResponse = '';  // Reset last response when user interrupts
                     runConversation(userInput);
                 }, 1000);
             } else {
@@ -127,13 +120,11 @@ $(document).ready(function() {
             success: function() {
                 conversation = [];
                 $("#chatWindow").empty();
-                $("#aiTitle").empty();
                 isRunning = false;
                 iterationCount = 0;
                 currentTopic = '';
                 lastResponse = '';
                 documentContent = '';
-                aiTitle = '';
                 $("#fileName").text('');
                 updateButtonStates();
                 addMessage("Conversation and context have been reset.", true);
@@ -145,7 +136,7 @@ $(document).ready(function() {
         let text = conversation.map(msg => `${msg.isUser ? 'User' : 'Chatbot'}: ${msg.text}`).join('\n');
         let blob = new Blob([text], { type: 'text/plain' });
         let anchor = document.createElement('a');
-        anchor.download = `${aiTitle || 'conversation'}.txt`;
+        anchor.download = 'conversation.txt';
         anchor.href = window.URL.createObjectURL(blob);
         anchor.click();
     });
