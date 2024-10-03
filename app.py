@@ -20,6 +20,7 @@ def chat():
     iterations = data['iterations']
     last_response = data.get('last_response', '')
     document_content = data.get('document_content', '')
+    generate_title = data.get('generate_title', False)
     
     if not last_response:
         # First iteration
@@ -37,21 +38,15 @@ def chat():
     logging.info(f"Sending prompt to LLM: {prompt}")
     response = client.generate(model='llama3.2:latest', prompt=prompt)
     time.sleep(10)  # 10-second pause between calls
-    
-    return jsonify({"response": response['response']})
 
-@app.route('/generate_title', methods=['POST'])
-def generate_title():
-    conversation = request.json['conversation']
-    conversation_text = "\n".join([f"{'User' if msg['isUser'] else 'Chatbot'}: {msg['text']}" for msg in conversation])
+    result = {"response": response['response']}
+
+    if generate_title:
+        title_prompt = f"Based on the following conversation, generate a short, catchy title:\n\n{topic}\n{response['response']}"
+        title_response = client.generate(model='llama3.2:latest', prompt=title_prompt)
+        result["title"] = title_response['response'].strip()
     
-    prompt = f"Based on the following conversation, generate a short, catchy title that summarizes the main topic or theme:\n\n{conversation_text}\n\nTitle:"
-    
-    logging.info(f"Sending title generation prompt to LLM: {prompt}")
-    response = client.generate(model='llama3.2:latest', prompt=prompt)
-    
-    title = response['response'].strip()
-    return jsonify({"title": title})
+    return jsonify(result)
 
 @app.route('/reset', methods=['POST'])
 def reset():

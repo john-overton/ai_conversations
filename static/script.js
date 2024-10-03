@@ -36,22 +36,6 @@ $(document).ready(function() {
         }
     }
 
-    function updateAITitle() {
-        $.ajax({
-            url: '/generate_title',
-            method: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify({ conversation: conversation }),
-            success: function(response) {
-                aiTitle = response.title;
-                $("#aiTitle").text(aiTitle);
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                console.error("Error generating title:", textStatus, errorThrown);
-            }
-        });
-    }
-
     function runConversation(topic) {
         isRunning = true;
         currentTopic = topic;
@@ -68,14 +52,18 @@ $(document).ready(function() {
                     topic: currentTopic, 
                     iterations: 1, 
                     last_response: lastResponse,
-                    document_content: documentContent
+                    document_content: documentContent,
+                    generate_title: aiTitle === ''
                 }),
                 success: function(response) {
                     addMessage(response.response);
                     lastResponse = response.response;
                     iterationCount++;
                     
-                    updateAITitle();
+                    if (response.title && aiTitle === '') {
+                        aiTitle = response.title;
+                        $("#aiTitle").text(aiTitle);
+                    }
                     
                     if (iterationCount % 16 === 0) {
                         if (confirm("Do you want to continue the conversation?")) {
@@ -139,7 +127,7 @@ $(document).ready(function() {
             success: function() {
                 conversation = [];
                 $("#chatWindow").empty();
-                $("#aiTitle").text('');
+                $("#aiTitle").empty();
                 isRunning = false;
                 iterationCount = 0;
                 currentTopic = '';
