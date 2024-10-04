@@ -6,43 +6,59 @@
     <title>AI Chatbot</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/2.0.3/marked.min.js"></script>
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-css.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-markup.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
 </head>
 <body>
     <div class="container">
-        <h1 id="chatTitle">AI Chatbot</h1>
-        <div class="settings">
-            <label class="switch">
-                <input type="checkbox" id="darkModeToggle">
-                <span class="slider round"></span>
-                <span class="label">Dark Mode</span>
-            </label>
-            <label class="switch">
-                <input type="checkbox" id="selfChatToggle">
-                <span class="slider round"></span>
-                <span class="label">AI Self-Chat</span>
-            </label>
+        <div class="chat-container">
+            <h1 id="chatTitle">AI Chatbot</h1>
+            <div class="settings">
+                <div>
+                    <label class="switch">
+                        <input type="checkbox" id="darkModeToggle">
+                        <span class="slider round"></span>
+                        <span class="label">Dark Mode</span>
+                    </label>
+                    <label class="switch">
+                        <input type="checkbox" id="selfChatToggle">
+                        <span class="slider round"></span>
+                        <span class="label">AI Self-Chat</span>
+                    </label>
+                </div>
+            </div>
+            <div id="chatWindow"></div>
+            <textarea id="userInput" placeholder="Enter your message"></textarea>
+            <div class="button-container">
+                <button id="sendBtn">Send</button>
+                <button id="stopBtn" style="display: none;">Stop</button>
+                <button id="resetBtn">Reset</button>
+                <button id="exportBtn">Export</button>
+                <label id="fileLabel" for="fileInput">Attach File</label>
+                <input type="file" id="fileInput" accept=".txt,.py,.js,.html,.css,.md,.json,.xml">
+                <label id="projectLabel" for="projectInput">Upload Project</label>
+                <input type="file" id="projectInput" accept=".zip">
+            </div>
+            <div id="fileName"></div>
+            <div class="prompt-container">
+                <textarea id="customPrompt" placeholder="Enter custom prompt (use {user_input} for user's message)"></textarea>
+            </div>
         </div>
-        <div id="chatWindow"></div>
-        <div id="artifactPane" style="display: none;">
-            <h3>Detected Code:</h3>
-            <pre><code id="detectedCode"></code></pre>
-        </div>
-        <textarea id="userInput" placeholder="Enter your message"></textarea>
-        <div class="button-container">
-            <button id="sendBtn">Send</button>
-            <button id="stopBtn" style="display: none;">Stop</button>
-            <button id="resetBtn">Reset</button>
-            <button id="exportBtn">Export</button>
-            <label id="fileLabel" for="fileInput">Attach File</label>
-            <input type="file" id="fileInput" accept=".txt,.py,.js,.html,.css,.md,.json,.xml">
-            <label id="projectLabel" for="projectInput">Upload Project</label>
-            <input type="file" id="projectInput" accept=".zip">
-        </div>
-        <div id="fileName"></div>
-        <div class="prompt-container">
-            <textarea id="customPrompt" placeholder="Enter custom prompt (use {user_input} for user's message)"></textarea>
+        <div id="artifactContainer">
+            <div id="artifactToggle">
+                <button id="toggleArtifactBtn">Hide Artifacts</button>
+            </div>
+            <div id="artifactPane" style="display: none;">
+                <h3>Detected Code:</h3>
+                <select id="codeSelector"></select>
+                <pre><code id="detectedCode" class="language-markup"></code></pre>
+            </div>
         </div>
     </div>
 </body>

@@ -7,9 +7,12 @@ $(document).ready(function() {
     let documentContent = '';
     let isSelfChat = false;
     let isDarkMode = false;
+    let codeBlocks = [];
 
     function formatMessage(message) {
-        return marked(message);
+        let formattedMessage = marked(message);
+        formattedMessage = formattedMessage.replace(/<pre><code class="language-(\w+)">/g, '<pre><code class="language-$1">');
+        return formattedMessage;
     }
 
     function addMessage(message, isUser = false) {
@@ -25,16 +28,49 @@ $(document).ready(function() {
         `;
         $("#chatWindow").append(messageHtml);
         $("#chatWindow").scrollTop($("#chatWindow")[0].scrollHeight);
+        Prism.highlightAllUnder(document.getElementById('chatWindow'));
 
         // Check for code in AI response
         if (!isUser && message.includes('```')) {
-            let codeBlocks = message.match(/```[\s\S]*?```/g);
-            if (codeBlocks) {
-                $("#detectedCode").text(codeBlocks.join('\n\n').replace(/```/g, ''));
+            codeBlocks = message.match(/```(\w+)?\n[\s\S]*?```/g) || [];
+            if (codeBlocks.length > 0) {
+                $("#codeSelector").empty();
+                codeBlocks.forEach((block, index) => {
+                    let language = block.match(/```(\w+)?/)[1] || 'markup';
+                    $("#codeSelector").append(`<option value="${index}">Code Block ${index + 1} (${language})</option>`);
+                });
+                updateCodeDisplay(0);
                 $("#artifactPane").show();
+                $("#artifactContainer").removeClass("minimized");
+                $("#toggleArtifactBtn").text("Hide Artifacts");
             }
         }
     }
+
+    function updateCodeDisplay(index) {
+        let block = codeBlocks[index];
+        let language = block.match(/```(\w+)?/)[1] || 'markup';
+        let code = block.replace(/```(\w+)?\n/, '').replace(/```$/, '');
+        $("#detectedCode").attr('class', `language-${language}`).text(code);
+        Prism.highlightElement(document.getElementById('detectedCode'));
+    }
+
+    $("#codeSelector").change(function() {
+        updateCodeDisplay($(this).val());
+    });
+
+    $("#toggleArtifactBtn").click(function() {
+        $("#artifactContainer").toggleClass("minimized");
+        if ($("#artifactContainer").hasClass("minimized")) {
+            $("#artifactPane").hide();
+            $(this).text("Show Artifacts");
+            $("#artifactContainer").css('width', 'auto');
+        } else {
+            $("#artifactPane").show();
+            $(this).text("Hide Artifacts");
+            $("#artifactContainer").css('width', '');
+        }
+    });
 
     function updateButtonStates() {
         if (isRunning) {
@@ -223,6 +259,12 @@ $(document).ready(function() {
     $("#darkModeToggle").change(function() {
         isDarkMode = this.checked;
         $("body").toggleClass("dark-mode", isDarkMode);
+        if (isDarkMode) {
+            $('head').append('<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-tomorrow.min.css" id="prismDarkTheme">');
+        } else {
+            $('#prismDarkTheme').remove();
+        }
+        Prism.highlightAll();
     });
 
     $("#selfChatToggle").change(function() {

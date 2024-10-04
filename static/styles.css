@@ -1,9 +1,88 @@
-body {
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
     font-family: Arial, sans-serif;
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
     transition: background-color 0.3s, color 0.3s;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+.container {
+    display: flex;
+    flex: 1;
+    height: 100vh;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.chat-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    max-width: calc(70% - 20px);
+    margin-right: 20px;
+}
+
+#artifactContainer {
+    flex: 0 0 30%;
+    display: flex;
+    flex-direction: column;
+    transition: flex 0.3s ease-in-out;
+    background-color: #f5f5f5;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+#artifactToggle {
+    padding: 10px;
+    text-align: right;
+}
+
+#artifactPane {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.dark-mode #artifactContainer {
+    background-color: #2a2a2a;
+}
+
+#codeSelector {
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 5px;
+}
+
+.dark-mode #codeSelector {
+    background-color: #444;
+    color: #e0e0e0;
+    border-color: #555;
+}
+
+#artifactContainer.minimized {
+    flex: 0 0 auto;
+    width: auto;
+}
+
+#toggleArtifactBtn {
+    padding: 5px 10px;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.dark-mode #toggleArtifactBtn {
+    background-color: #444;
+    color: #e0e0e0;
+    border-color: #555;
 }
 
 body.dark-mode {
@@ -14,7 +93,7 @@ body.dark-mode {
 h1 { margin-bottom: 20px; }
 
 #chatWindow {
-    height: 400px;
+    flex: 1;
     border: 1px solid #ccc;
     border-radius: 5px;
     overflow-y: scroll;
@@ -112,7 +191,7 @@ button:hover, #fileLabel:hover, #projectLabel:hover {
 
 .settings {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     margin-bottom: 20px;
 }
 
@@ -167,11 +246,10 @@ input:checked + .slider:before { transform: translateX(26px); }
 }
 
 #artifactPane {
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    padding: 15px;
-    margin-bottom: 20px;
-    background-color: #f9f9f9;
+    flex: 0 0 30%;
+    border-left: 1px solid #ccc;
+    padding: 20px;
+    overflow-y: auto;
 }
 
 .dark-mode #artifactPane {
@@ -180,10 +258,69 @@ input:checked + .slider:before { transform: translateX(26px); }
 }
 
 #detectedCode {
-    white-space: pre-wrap;
-    word-wrap: break-word;
+    flex: 1;
+    overflow: auto;
 }
 
 .prompt-container {
     margin-top: 20px;
+}
+
+/* Prism overrides for dark mode */
+.dark-mode .token.comment,
+.dark-mode .token.prolog,
+.dark-mode .token.doctype,
+.dark-mode .token.cdata {
+    color: #8292a2;
+}
+
+.dark-mode .token.punctuation {
+    color: #f8f8f2;
+}
+
+.dark-mode .token.property,
+.dark-mode .token.tag,
+.dark-mode .token.constant,
+.dark-mode .token.symbol,
+.dark-mode .token.deleted {
+    color: #f92672;
+}
+
+.dark-mode .token.boolean,
+.dark-mode .token.number {
+    color: #ae81ff;
+}
+
+.dark-mode .token.selector,
+.dark-mode .token.attr-name,
+.dark-mode .token.string,
+.dark-mode .token.char,
+.dark-mode .token.builtin,
+.dark-mode .token.inserted {
+    color: #a6e22e;
+}
+
+.dark-mode .token.operator,
+.dark-mode .token.entity,
+.dark-mode .token.url,
+.dark-mode .language-css .token.string,
+.dark-mode .style .token.string,
+.dark-mode .token.variable {
+    color: #f8f8f2;
+}
+
+.dark-mode .token.atrule,
+.dark-mode .token.attr-value,
+.dark-mode .token.function,
+.dark-mode .token.class-name {
+    color: #e6db74;
+}
+
+.dark-mode .token.keyword {
+    color: #66d9ef;
+}
+
+.dark-mode .token.regex,
+.dark-mode .token.important {
+    color: #fd971f;
 }
